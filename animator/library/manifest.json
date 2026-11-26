@@ -1,0 +1,83 @@
+{
+  "version": 1,
+  "world": {"width": 1080, "height": 1920, "fps": 30},
+  "actions": {
+    "idle":      {"script": "res://actions/idle.gd",      "desc": "en reposo, respira"},
+    "talk":      {"script": "res://actions/talk.gd",      "desc": "gesticula con las manos mientras habla"},
+    "blink":     {"script": "res://actions/blink.gd",     "desc": "parpadea dos veces, incrédulo"},
+    "walk":      {"script": "res://actions/walk.gd",      "desc": "camina hasta un punto del escenario", "needs_to": true},
+    "point":     {"script": "res://actions/point.gd",     "desc": "señala con el brazo hacia delante y arriba"},
+    "surprised": {"script": "res://actions/surprised.gd", "desc": "se sobresalta, brazos arriba"},
+    "happy":     {"script": "res://actions/happy.gd",     "desc": "salta de alegría"},
+    "confused":  {"script": "res://actions/confused.gd",  "desc": "ladea la cabeza y se rasca"},
+    "thinking":  {"script": "res://actions/thinking.gd",  "desc": "mano en la barbilla, mira arriba"},
+    "look_up":   {"script": "res://actions/look_up.gd",   "desc": "levanta la cabeza y mira arriba"},
+    "look_left": {"script": "res://actions/look_left.gd", "desc": "mira hacia atrás por encima del hombro"},
+    "float":     {"script": "res://actions/float.gd",     "desc": "flota sin peso: se eleva un poco y se mece"}
+  },
+  "emotions": ["neutral", "happy", "surprised", "confused", "thinking", "worried"],
+  "cameras": {
+    "static":   {"desc": "quieta donde está", "target": false},
+    "wide":     {"desc": "vuelve al plano general", "target": false},
+    "push_in":  {"desc": "se acerca a un personaje u objeto", "target": true},
+    "pan":      {"desc": "se desplaza hasta un personaje u objeto sin cambiar el zoom", "target": true},
+    "follow":   {"desc": "sigue a un personaje u objeto", "target": true},
+    "shake":    {"desc": "temblor breve", "target": false},
+    "drift_up": {"desc": "sube despacio, como si todo perdiera peso", "target": false}
+  },
+  "effects": {
+    "gravity_off": {"desc": "los objetos sueltos dejan de pesar y se separan despacio de donde estaban"},
+    "gravity_on":  {"desc": "los objetos vuelven a caer y rebotan"},
+    "flash":       {"desc": "destello blanco breve"},
+    "dust":        {"desc": "motas que suben: el aire se mueve hacia arriba"}
+  },
+  "sets": {
+    "laboratorio": {
+      "script": "res://sets/laboratorio.gd", "desc": "laboratorio con mesa, pizarra, estante y ventana",
+      "anchors": {"izquierda": [270, 1290], "centro": [540, 1290], "derecha": [810, 1290]},
+      "prop_anchors": {"mesa_1": [410, 1040], "mesa_2": [500, 1040], "mesa_3": [590, 1040], "mesa_4": [680, 1040],
+                       "estante_1": [130, 560], "estante_2": [230, 560], "estante_3": [330, 560],
+                       "suelo_izq": [110, 1290], "suelo_der": [970, 1290], "aire": [540, 620]}
+    },
+    "espacio": {
+      "script": "res://sets/espacio.gd", "desc": "espacio con estrellas, para mostrar astros (sin personajes en pie: se les oye)",
+      "anchors": {},
+      "prop_anchors": {"centro": [540, 760], "arriba": [540, 430], "izquierda": [250, 760], "derecha": [830, 760], "abajo": [540, 1090]}
+    },
+    "exterior": {
+      "script": "res://sets/exterior.gd", "desc": "campo abierto de día, con colinas",
+      "anchors": {"izquierda": [270, 1290], "centro": [540, 1290], "derecha": [810, 1290]},
+      "prop_anchors": {"cielo": [540, 480], "cielo_izq": [230, 420], "cielo_der": [850, 420], "suelo_izq": [110, 1290], "suelo_der": [970, 1290]}
+    },
+    "simulacion": {
+      "script": "res://sets/simulacion.gd", "desc": "pantalla de simulación: cuadrícula oscura para diagramas (sin personajes en pie)",
+      "anchors": {},
+      "prop_anchors": {"centro": [540, 760], "arriba": [540, 430], "izquierda": [270, 760], "derecha": [810, 760], "abajo": [540, 1090]}
+    }
+  },
+  "props": {
+    "matraz":        {"script": "res://props/lab.gd", "loose": true,  "desc": "matraz con líquido"},
+    "tubo_ensayo":   {"script": "res://props/lab.gd", "loose": true,  "desc": "tubo de ensayo"},
+    "vaso":          {"script": "res://props/lab.gd", "loose": true,  "desc": "vaso de precipitados"},
+    "microscopio":   {"script": "res://props/lab.gd", "loose": false, "desc": "microscopio"},
+    "taza":          {"script": "res://props/lab.gd", "loose": true,  "desc": "taza de café"},
+    "libro":         {"script": "res://props/lab.gd", "loose": true,  "desc": "libro"},
+    "lapiz":         {"script": "res://props/lab.gd", "loose": true,  "desc": "lápiz"},
+    "manzana":       {"script": "res://props/lab.gd", "loose": true,  "desc": "manzana"},
+    "planta":        {"script": "res://props/lab.gd", "loose": true,  "desc": "planta en maceta"},
+    "tierra":        {"script": "res://props/space.gd", "loose": false, "desc": "la Tierra, girando"},
+    "luna":          {"script": "res://props/space.gd", "loose": false, "desc": "la Luna"},
+    "sol":           {"script": "res://props/space.gd", "loose": false, "desc": "el Sol"},
+    "planeta":       {"script": "res://props/space.gd", "loose": false, "desc": "planeta con anillo"},
+    "atomo":         {"script": "res://props/diagram.gd", "loose": false, "desc": "átomo con electrones orbitando"},
+    "molecula_agua": {"script": "res://props/diagram.gd", "loose": false, "desc": "molécula de agua"},
+    "flecha_fuerza": {"script": "res://props/diagram.gd", "loose": false, "desc": "flecha de fuerza con etiqueta", "params": ["angle", "length", "label"]},
+    "particulas":    {"script": "res://props/diagram.gd", "loose": false, "desc": "partículas moviéndose al azar"},
+    "regla":         {"script": "res://props/diagram.gd", "loose": false, "desc": "escala con una medida", "params": ["label"]},
+    "linea_tiempo":  {"script": "res://props/diagram.gd", "loose": false, "desc": "línea de tiempo con marcas", "params": ["marks"]},
+    "grafico":       {"script": "res://props/diagram.gd", "loose": false, "desc": "gráfico de línea que se dibuja", "params": ["values", "label"]},
+    "sim_tangente":  {"script": "res://props/diagram.gd", "loose": false, "simulation": "separacion_sin_gravedad",
+                      "desc": "simulación: sin gravedad, un objeto sigue en línea recta mientras el suelo de la Tierra se curva bajo él"}
+  },
+  "characters": ["dra_nova", "leo"]
+}

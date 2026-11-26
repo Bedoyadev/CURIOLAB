@@ -1,0 +1,27 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.pytest_cache/
+
+# Datos del canal (base, voces, episodios)
+backend/data/
+
+# Credenciales
+.env
+
+# Node / Remotion
+node_modules/
+renderer/jobs/
+
+# Godot
+.godot/
+*.import
+
+# IDE / SO
+.vscode/
+.idea/
+Thumbs.db
+.DS_Store

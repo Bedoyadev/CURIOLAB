@@ -1,0 +1,289 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Estudio de Animación IA · __NAME__</title>
+<style>
+  :root { --ink: __INK__; --accent: __ACCENT__; --accent2: __ACCENT2__; --panel: #20222b; --line: #3a3d4a; --text: #f3f4f8; --muted: #a4a8b8; --night: #181a21; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--ink); color: var(--text); font: 15px/1.5 Inter, system-ui, sans-serif; }
+  header { padding: 20px 28px; border-bottom: 1px solid var(--line); display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 16px; }
+  header h1 { margin: 0; font-size: 22px; font-weight: 900; }
+  header h1 span { color: var(--accent); }
+  header .muted { margin-right: auto; }
+  main { display: grid; grid-template-columns: minmax(290px, 390px) 1fr; gap: 22px; padding: 22px 28px; max-width: 1500px; }
+  @media (max-width: 900px) { main { grid-template-columns: 1fr; padding: 16px; } }
+  .card { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 16px; margin-bottom: 16px; }
+  h2 { margin: 0 0 10px; font-size: 13px; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); }
+  h3 { margin: 18px 0 8px; font-size: 13px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--muted); }
+  input, textarea, button, select { font: inherit; }
+  input[type=text], textarea, select { width: 100%; background: var(--night); color: var(--text); border: 1px solid var(--line); border-radius: 6px; padding: 9px 10px; margin-bottom: 8px; }
+  textarea { min-height: 150px; resize: vertical; }
+  button { background: var(--accent); color: var(--ink); border: 0; border-radius: 6px; padding: 9px 16px; font-weight: 800; cursor: pointer; }
+  button.ghost { background: transparent; color: var(--text); border: 1px solid var(--line); }
+  button.small { padding: 4px 10px; font-size: 13px; }
+  button:disabled { opacity: .45; cursor: default; }
+  label.pick { display: inline-flex; align-items: center; gap: 6px; margin: 0 12px 8px 0; cursor: pointer; }
+  .row { padding: 11px 12px; border: 1px solid var(--line); border-radius: 6px; margin-bottom: 8px; cursor: pointer; background: var(--night); }
+  .row.on { border-color: var(--accent); }
+  .row small, .muted { color: var(--muted); }
+  .row small { display: block; }
+  .tag { display: inline-block; font-size: 11px; font-weight: 800; letter-spacing: 1px; padding: 2px 8px; border-radius: 999px; border: 1px solid var(--line); text-transform: uppercase; margin-right: 6px; }
+  .tag.go { background: var(--accent2); border-color: var(--accent2); color: var(--ink); }
+  .tag.warn { border-color: #ff8a8a; color: #ff8a8a; }
+  .cols { display: grid; grid-template-columns: 300px 1fr; gap: 20px; }
+  @media (max-width: 1100px) { .cols { grid-template-columns: 1fr; } }
+  video { width: 100%; max-width: 300px; border-radius: 8px; background: #000; display: block; }
+  table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  td, th { text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { color: var(--muted); font-weight: 600; }
+  .bad { color: #ff8a8a; font-weight: 800; }
+  .ok { color: #8fe0b0; }
+  a { color: var(--accent); }
+  .msg { color: #ff8a8a; margin: 8px 0; min-height: 1.2em; }
+  .bar { height: 8px; background: var(--night); border: 1px solid var(--line); border-radius: 4px; overflow: hidden; }
+  .bar div { height: 100%; background: var(--accent); transition: width .5s; }
+  .steps { list-style: none; margin: 10px 0 0; padding: 0; font-size: 14px; }
+  .steps li { padding: 2px 0; color: var(--muted); }
+  .steps li.done { color: #8fe0b0; }
+  .steps li.current { color: var(--text); font-weight: 800; }
+  .beat { padding: 7px 0; border-bottom: 1px solid var(--line); }
+  ul { margin: 6px 0; padding-left: 20px; }
+  .acts { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Estudio de Animación IA · <span>__NAME__</span></h1>
+  <span class="muted">__SLOGAN__</span>
+  <span id="yt"></span>
+  <span id="total" class="muted"></span>
+</header>
+<main>
+  <section>
+    <div class="card">
+      <h2>Nuevo episodio</h2>
+      <input type="text" id="topic" maxlength="300" placeholder="Tema o pregunta (vacío: el estudio elige el tema)">
+      <select id="format"></select>
+      <div id="cast"></div>
+      <button id="gen" style="width:100%;padding:14px;font-size:17px">Generar animación con IA</button>
+      <div class="muted" style="margin-top:10px;font-size:13px">Investiga con fuentes, escribe el guion, planifica las escenas, graba las voces, anima y monta.
+        Límite por episodio: __LIMIT__ USD. El video queda en revisión; no se publica solo.</div>
+      <div class="msg" id="genmsg"></div>
+      <button id="demo" class="ghost small">Episodio de demostración (sin gasto)</button>
+      <div id="tools" class="muted" style="margin-top:10px;font-size:13px"></div>
+    </div>
+    <div class="card">
+      <h2>Episodios</h2>
+      <div id="list" class="muted">Cargando…</div>
+    </div>
+    <div class="card">
+      <h2>Rendimiento</h2>
+      <div id="stats" class="muted">Sin episodios publicados todavía.</div>
+      <button id="statsbtn" class="ghost small" style="margin-top:10px">Leer datos de YouTube</button>
+      <div class="msg" id="statsmsg"></div>
+    </div>
+  </section>
+  <section id="detail"><div class="card muted">Elige un episodio de la lista, o genera el primero.</div></section>
+</main>
+<script>
+const $ = (id) => document.getElementById(id);
+const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const PRIVACY = { private: "Privado", unlisted: "Oculto", public: "Público" };
+const LABEL = { PENDIENTE: "Pendiente", INVESTIGANDO: "Investigando", ESCRIBIENDO: "Escribiendo", STORYBOARD: "Storyboard", GENERANDO_VOZ: "Generando voz",
+                ANIMANDO: "Animando", COMPONIENDO: "Componiendo", VALIDANDO: "Validando", "LISTO_PARA_REVISIÓN": "Listo para revisión",
+                APROBADO: "Aprobado", PUBLICADO: "Publicado", ERROR: "Error" };
+const WORKING = ["INVESTIGANDO", "ESCRIBIENDO", "STORYBOARD", "GENERANDO_VOZ", "ANIMANDO", "COMPONIENDO", "VALIDANDO"];
+let current = null, youtube = null, names = {}, shownKey = "";
+
+async function api(path, options) {
+  const r = await fetch(path, options);
+  const data = await r.json().catch(() => ({}));
+  if (!r.ok) throw new Error(typeof data.detail === "string" ? data.detail : "No se pudo completar");
+  return data;
+}
+const post = (path, body) => api(path, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body || {}) });
+
+async function loadStudio() {
+  const s = await api("/api/studio");
+  s.characters.forEach((c) => { names[c.id] = c.name; });
+  $("format").innerHTML = s.formats.map((f) => `<option value="${f.key}">${esc(f.label)}</option>`).join("");
+  $("cast").innerHTML = s.characters.map((c) => `<label class="pick"><input type="checkbox" value="${c.id}" ${c.default ? "checked" : ""} ${c.has_voice ? "" : "disabled"}>
+      ${esc(c.name)} <span class="muted">(${esc(c.role)}${c.has_voice ? "" : ", sin voz"})</span></label>`).join("");
+  $("tools").innerHTML = (s.godot ? "" : `<span class="bad">Godot no está configurado (GODOT_BIN en backend/.env): no se puede animar.</span><br>`) +
+    `Biblioteca v${s.library.version}: ${s.characters.length} personajes · ${s.library.actions.length} acciones · ${s.library.sets.length} escenarios · ${s.library.props.length} objetos`;
+}
+
+async function loadYouTube() {
+  youtube = await api("/api/youtube/status");
+  $("yt").innerHTML = youtube.connected
+    ? `YouTube: <strong>${esc(youtube.channel_title || "conectado")}</strong> <a href="#" onclick="ytOff();return false">desconectar</a>`
+    : youtube.configured ? `<button class="ghost small" onclick="ytOn()">Conectar el canal de YouTube</button>` : `<span class="muted">YouTube: sin credenciales</span>`;
+}
+async function ytOn() { const r = await api("/api/youtube/connect"); window.open(r.url, "_blank"); }
+async function ytOff() { if (confirm("¿Desconectar el canal de YouTube de este estudio?")) { await post("/api/youtube/disconnect"); await loadYouTube(); } }
+
+function stateTag(e) {
+  const cls = e.status === "ERROR" ? "tag warn" : (e.status === "LISTO_PARA_REVISIÓN" || e.status === "APROBADO" || e.status === "PUBLICADO") ? "tag go" : "tag";
+  return `<span class="${cls}">${LABEL[e.status] || e.status}${e.queued ? " · en cola" : ""}</span>${e.mode === "demo" ? '<span class="tag">demo</span>' : ""}`;
+}
+
+function progressBlock(e) {
+  const p = e.progress;
+  return `<div class="bar"><div style="width:${p.percent}%"></div></div>
+    <ul class="steps">${p.stages.map((s) => `<li class="${s.state}">${s.state === "done" ? "✓" : s.state === "current" ? "▶" : "·"} ${esc(s.label)}${s.total ? ` — ${s.done} de ${s.total}` : ""}</li>`).join("")}</ul>
+    <div class="muted" style="margin-top:6px;font-size:13px">${esc(p.message)}</div>`;
+}
+
+async function loadList() {
+  const d = await api("/api/episodes");
+  $("total").textContent = `Gasto total: ${d.spent_usd.toFixed(2)} USD`;
+  $("list").className = "";
+  $("list").innerHTML = d.episodes.length ? d.episodes.map((e) => `
+    <div class="row ${e.id === current ? "on" : ""}" onclick="show(${e.id})">
+      ${stateTag(e)}<strong>#${e.id}</strong> ${esc(e.title)}
+      <small>${e.duration ? e.duration.toFixed(0) + " s · " : ""}${e.spent_usd.toFixed(2)} USD${e.working ? " · " + esc(e.progress.message) : ""}</small>
+    </div>`).join("") : "Todavía no hay episodios.";
+  return d;
+}
+
+async function show(id, force) {
+  current = id;
+  const e = await api(`/api/episodes/${id}`);
+  // While nothing changes the page is left alone, so the video keeps playing and typed text stays.
+  const key = [e.id, e.status, e.progress.percent, e.progress.message, e.error, e.events.length ? e.events[0].id : 0].join("|");
+  if (!force && key === shownKey) return;
+  shownKey = key;
+  const busy = e.working || WORKING.includes(e.status);
+  const locked = e.status === "APROBADO" || e.status === "PUBLICADO";
+  const q = e.quality, meta = e.metadata, sb = e.storyboard, pub = e.publication;
+  const who = (id) => esc(names[id] || id);
+  $("detail").innerHTML = `
+    <div class="card">
+      <h2>Episodio #${e.id}</h2>
+      <div style="font-size:19px;font-weight:800;margin-bottom:8px">${esc(e.title)}</div>
+      ${stateTag(e)} <span class="muted">${e.spent_usd.toFixed(3)} USD</span>
+      ${e.error ? `<div class="msg">${esc(e.error)}</div>` : ""}
+      ${busy || e.status === "PENDIENTE" || e.status === "ERROR" ? `<div style="margin-top:12px">${progressBlock(e)}</div>` : ""}
+      <div class="acts">
+        ${busy ? `<button class="ghost" onclick="act(${id},'cancel')">Cancelar</button>` : ""}
+        ${!busy && (e.status === "ERROR" || (e.status === "PENDIENTE" && e.error)) ? `<button onclick="act(${id},'resume')">Reanudar</button>` : ""}
+        ${e.status === "LISTO_PARA_REVISIÓN" ? `<button onclick="act(${id},'approve')">Aprobar</button><button class="ghost" onclick="act(${id},'reject')">Rechazar</button>` : ""}
+        ${!busy && !locked && e.script ? `<button class="ghost" onclick="redo(${id},'guion')">Regenerar guion</button>` : ""}
+        ${!busy && !locked && sb ? `<button class="ghost" onclick="redo(${id},'storyboard')">Regenerar storyboard</button>` : ""}
+      </div>
+      <div class="msg" id="actmsg"></div>
+    </div>
+    ${e.has_video ? `<div class="card"><div class="cols">
+      <div><video controls preload="metadata" src="/api/episodes/${id}/video?v=${encodeURIComponent(key)}" poster="/api/episodes/${id}/thumbnail?v=${encodeURIComponent(key)}"></video>
+        <div style="margin-top:10px"><a href="/api/episodes/${id}/video?download=true">Descargar MP4</a></div>
+        <h3>Costos</h3>
+        <table>${e.costs.map((c) => `<tr><td>${esc(c.service)}</td><td class="muted">${esc(c.detail)}</td><td>${c.usd.toFixed(3)}</td></tr>`).join("") || '<tr><td class="muted">Sin gasto</td></tr>'}</table>
+      </div>
+      <div>${q ? `<h2>Control de calidad: <span class="${q.passed ? "ok" : "bad"}">${q.passed ? "todo lo medible está bien" : "hay puntos que fallan"}</span></h2>
+        <table>${q.checks.map((c) => `<tr><td class="muted">${esc(c.group)}</td><td>${esc(c.name)}</td><td class="${c.ok ? "ok" : "bad"}">${c.ok ? "Bien" : "FALLA"}</td><td class="muted">${esc(c.detail)}</td></tr>`).join("")}</table>
+        <h3>Te toca revisar</h3><ul>${q.human.map((h) => `<li>${esc(h)}</li>`).join("")}</ul>` : ""}</div>
+    </div></div>` : ""}
+    ${e.scenes.length ? `<div class="card"><h2>Escenas</h2>
+      <table><tr><th>Escena</th><th>Escenario</th><th>Empieza</th><th>Dura</th><th></th></tr>
+      ${e.scenes.map((s) => `<tr><td>${esc(s.id)}${e.retakes[s.id] ? ` <span class="muted">(toma ${e.retakes[s.id] + 1})</span>` : ""}</td><td>${esc(s.set)}${s.label ? ` · <span class="muted">${esc(s.label)}</span>` : ""}</td>
+        <td>${s.start.toFixed(1)} s</td><td>${s.duration.toFixed(1)} s</td>
+        <td>${busy || locked ? "" : `<button class="ghost small" onclick="retake(${id},'${esc(s.id)}')">Volver a animar</button>`}</td></tr>`).join("")}</table>
+      <div class="muted" style="font-size:13px;margin-top:8px">Volver a animar una escena no repite las voces ni las demás escenas.</div></div>` : ""}
+    ${e.script ? `<div class="card"><h2>Guion · ${e.script.checks ? e.script.checks.words : ""} palabras</h2>
+      ${e.script.lines.map((l) => `<div class="beat"><strong>${who(l.speaker)}:</strong> ${esc(l.text)} ${l.supports.length ? `<span class="muted">[${esc(l.supports.join(", "))}]</span>` : ""}</div>`).join("")}
+      <h3>Ganchos comparados</h3>
+      ${e.script.hooks.map((h, i) => `<div class="beat">${i === e.script.chosen_hook ? '<span class="tag go">Elegido</span>' : '<span class="tag">Opción</span>'}${esc(h.text)}
+        <span class="muted">· ${Number(h.score).toFixed(1)}/10 · ${esc(h.why)}</span></div>`).join("")}
+      <div class="muted" style="font-size:13px;margin-top:8px">Las puntuaciones son el criterio editorial del modelo: ordenan opciones, no predicen visitas.</div></div>` : ""}
+    ${sb ? `<div class="card"><h2>Storyboard · esquema v${sb.schema_version}</h2>
+      ${sb.scenes.map((s) => `<h3>${esc(s.id)} · ${esc(s.set)}${s.label ? " · " + esc(s.label) : ""}</h3>
+        <div class="muted" style="font-size:13px">En escena: ${s.cast.map((m) => `${who(m.character)} (${esc(m.at)})`).join(", ") || "nadie (solo voces)"} · Objetos: ${s.props.map((p) => esc(p.prop)).join(", ") || "ninguno"}</div>
+        ${s.beats.map((b) => `<div class="beat">${b.text ? `<strong>${who(b.speaker)}:</strong> ${esc(b.text)}` : `<em class="muted">(${b.seconds} s sin diálogo${b.actor ? ", " + who(b.actor) : ""})</em>`}
+          <div class="muted" style="font-size:13px">${esc(b.action)} · ${esc(b.emotion)}${b.camera !== "static" ? " · cámara " + esc(b.camera) + (b.camera_target ? " → " + esc(b.camera_target) : "") : ""}${b.effects.length ? " · efectos: " + esc(b.effects.join(", ")) : ""}${b.reactions.length ? " · " + b.reactions.map((r) => `${who(r.character)} ${esc(r.action)}`).join(", ") : ""}${b.science_event ? " · " + esc(b.science_event) : ""}</div></div>`).join("")}`).join("")}
+      ${e.resources ? `<h3>Recursos usados</h3><div class="muted">Personajes: ${e.resources.characters.map(who).join(", ")} · Escenarios: ${esc(e.resources.sets.join(", "))} · Objetos: ${esc(e.resources.props.join(", "))}<br>
+        Acciones: ${esc(e.resources.actions.join(", "))} · Cámaras: ${esc(e.resources.cameras.join(", "))} · Efectos: ${esc(e.resources.effects.join(", ") || "ninguno")}<br>
+        Arte provisional (pendiente de diseño final): ${e.resources.provisional_art.map(who).join(", ")}, escenarios y objetos.</div>` : ""}</div>` : ""}
+    ${e.research ? `<div class="card"><h2>Investigación</h2>
+      <div>${esc(e.research.answer)}</div>
+      ${e.research.assumptions.length ? `<div class="muted" style="margin-top:6px">Supuestos: ${esc(e.research.assumptions.join(" "))}</div>` : ""}
+      <table style="margin-top:8px"><tr><th></th><th>Hecho</th><th>Cita literal de la fuente</th></tr>
+      ${e.research.facts.map((f) => `<tr><td>${esc(f.id)}</td><td>${esc(f.text)}</td><td class="muted">${f.quote ? `«${esc(f.quote)}» — ${esc((e.research.sources[f.source] || {}).publisher)}` : "sin fuente (demo)"}</td></tr>`).join("")}</table>
+      ${e.research.simulations.map((s) => `<h3>Simulación · ${esc(s.id)} · ${esc(s.exactness)}</h3><div>${esc(s.statement)}</div>
+        <div class="muted" style="font-size:13px">Fórmula: ${esc(s.formula)}<br>Supuestos: ${esc(s.assumptions.join(" "))}</div>`).join("")}
+      ${e.research.sources.length ? `<h3>Fuentes</h3><ul>${e.research.sources.map((s) => `<li><a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.title || s.url)}</a> <span class="muted">${esc(s.publisher)}</span></li>`).join("")}</ul>` : ""}
+      ${(e.research.candidates || []).length ? `<h3>Temas considerados</h3>${e.research.candidates.map((c) => `<div class="beat">${esc(c.question)} <span class="muted">· ${c.score}/100${c.repeated ? " · ya hecho" : ""} · ${esc(c.why)}</span></div>`).join("")}
+        <div class="muted" style="font-size:13px">Puntuación editorial del modelo, sin datos de demanda observada.</div>` : ""}</div>` : ""}
+    ${meta ? `<div class="card"><h2>Publicación</h2>
+      ${pub && pub.video_id ? `<div class="ok" style="margin-bottom:10px">Publicado como ${PRIVACY[pub.privacy] || pub.privacy}:
+        <a href="https://youtube.com/shorts/${esc(pub.video_id)}" target="_blank" rel="noopener">youtube.com/shorts/${esc(pub.video_id)}</a></div>` : ""}
+      <input type="text" id="ptitle" maxlength="100" value="${esc(meta.title)}" ${e.status === "PUBLICADO" ? "disabled" : ""}>
+      <textarea id="pdesc" ${e.status === "PUBLICADO" ? "disabled" : ""}>${esc(meta.description)}</textarea>
+      <div class="muted" style="margin-bottom:10px">Etiquetas: ${esc((meta.tags || []).join(", "))}</div>
+      ${e.status === "PUBLICADO" ? "" : `<div class="acts" style="align-items:center">
+        <button class="ghost" onclick="saveMeta(${id})">Guardar título y descripción</button>
+        ${e.status === "APROBADO" ? (youtube && youtube.connected
+          ? `<select id="privacy" style="width:auto;margin:0">${Object.entries(PRIVACY).map(([k, v]) => `<option value="${k}" ${youtube.default_privacy === k ? "selected" : ""}>${v}</option>`).join("")}</select>
+             <button id="pubbtn" onclick="publishNow(${id})">Subir a YouTube</button>`
+          : `<span class="muted">Conecta el canal de YouTube (arriba) para poder subirlo.</span>`)
+          : `<span class="muted">Se puede subir cuando el episodio esté aprobado.</span>`}</div>`}
+      <div class="msg" id="pubmsg"></div></div>` : ""}
+    <div class="card"><h2>Registro</h2>
+      ${e.events.map((ev) => `<div class="muted" style="font-size:13px">${esc(ev.at.slice(11, 19))} · ${esc(LABEL[ev.stage] || ev.stage)} · ${esc(ev.message)}${ev.total ? ` (${ev.done}/${ev.total})` : ""}</div>`).join("") || '<span class="muted">Sin actividad todavía.</span>'}
+    </div>`;
+  loadList();
+}
+
+async function act(id, action) { try { await post(`/api/episodes/${id}/${action}`); await show(id, true); } catch (e) { $("actmsg").textContent = e.message; } }
+async function redo(id, stage) {
+  if (!confirm(`Se va a regenerar el ${stage} y todo lo que depende de él. Las voces ya grabadas de líneas que no cambien no se pagan otra vez. ¿Continuar?`)) return;
+  try { await post(`/api/episodes/${id}/redo`, { stage }); await show(id, true); } catch (e) { $("actmsg").textContent = e.message; }
+}
+async function retake(id, scene) { try { await post(`/api/episodes/${id}/scenes/${scene}/retake`); await show(id, true); } catch (e) { $("actmsg").textContent = e.message; } }
+async function saveMeta(id, quiet) {
+  try {
+    await api(`/api/episodes/${id}/metadata`, { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ title: $("ptitle").value, description: $("pdesc").value }) });
+    if (!quiet) { $("pubmsg").style.color = "#8fe0b0"; $("pubmsg").textContent = "Guardado."; }
+    return true;
+  } catch (e) { $("pubmsg").style.color = ""; $("pubmsg").textContent = e.message; return false; }
+}
+async function publishNow(id) {
+  const privacy = $("privacy").value;
+  if (!confirm(`Se va a subir este episodio a YouTube como ${PRIVACY[privacy]}. ¿Continuar?`)) return;
+  if (!(await saveMeta(id, true))) return;
+  $("pubbtn").disabled = true;
+  $("pubmsg").style.color = ""; $("pubmsg").textContent = "Subiendo… puede tardar un par de minutos.";
+  try { await post(`/api/episodes/${id}/publish`, { privacy }); } catch (e) { $("pubmsg").textContent = e.message; $("pubbtn").disabled = false; return; }
+  await show(id, true);
+}
+
+async function start(demo) {
+  $("genmsg").textContent = "";
+  const characters = [...document.querySelectorAll("#cast input:checked")].map((i) => i.value);
+  try {
+    const r = await post("/api/generate", { topic: demo ? "" : $("topic").value, characters, format: $("format").value, demo });
+    $("topic").value = "";
+    await show(r.id, true);
+  } catch (e) { $("genmsg").textContent = e.message; }
+}
+function showStats(d) {
+  $("stats").innerHTML = `<div style="color:var(--text)">${esc(d.lessons.text)}</div>` + d.episodes.map((e) => `
+    <div class="row" onclick="show(${e.episode_id})"><strong>#${e.episode_id}</strong> ${esc(e.title)}
+      <small>${e.metrics ? `${e.metrics.views.toLocaleString("es")} visitas · ${e.metrics.likes ?? 0} me gusta${e.metrics.avg_view_percentage != null ? ` · ${e.metrics.avg_view_percentage.toFixed(0)} % visto de media` : ""} · leído ${esc(e.metrics.read_at.slice(0, 10))}` : "sin datos leídos"}</small></div>`).join("");
+}
+async function loadStats() { showStats(await api("/api/analytics")); }
+$("statsbtn").onclick = async () => {
+  $("statsmsg").textContent = "";
+  try { showStats(await post("/api/analytics/refresh")); } catch (e) { $("statsmsg").textContent = e.message; }
+};
+loadStats().catch(() => {});
+$("gen").onclick = () => start(false);
+$("demo").onclick = () => start(true);
+
+loadStudio().catch(() => {});
+loadYouTube().catch(() => {}).then(() => loadList()).then((d) => { if (d && d.episodes.length) show(d.episodes[0].id); });
+setInterval(async () => { await loadList().catch(() => null); if (current) show(current).catch(() => {}); }, 2500);
+</script>
+</body>
+</html>

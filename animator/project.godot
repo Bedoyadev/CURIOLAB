@@ -1,0 +1,26 @@
+; Motor de animación 2D (Godot 4). Lo dirige backend/animation: no se edita a mano por episodio.
+config_version=5
+
+[application]
+
+config/name="Animator"
+run/main_scene="res://director.tscn"
+config/features=PackedStringArray("4.7", "Forward Plus")
+
+[display]
+
+window/size/viewport_width=1080
+window/size/viewport_height=1920
+window/size/window_width_override=405
+window/size/window_height_override=720
+window/stretch/mode="viewport"
+
+[editor]
+
+movie_writer/mjpeg_quality=0.95
+movie_writer/fps=30
+
+[rendering]
+
+anti_aliasing/quality/msaa_2d=3
+environment/defaults/default_clear_color=Color(0.07, 0.08, 0.12, 1)

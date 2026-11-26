@@ -1,0 +1,65 @@
+{
+  "engine": "animation",
+  "key": "curiolab",
+  "name": "CURIOLAB",
+  "slogan": "Preguntas raras, respuestas de verdad.",
+  "about": "Ciencia, curiosidades y escenarios hipotéticos explicados por la Dra. Nova y su asistente Leo. Cada episodio parte de una pregunta, la pone a prueba en el laboratorio y dice con claridad qué es un hecho y qué es un supuesto.",
+  "language": "es",
+  "brand": {
+    "ink": "#15161C",
+    "paper": "#FFFFFF",
+    "accent": "#FFD23F",
+    "accent2": "#18B7A6",
+    "font_title": "Archivo Black",
+    "font_body": "Inter"
+  },
+  "cast": ["dra_nova", "leo"],
+  "voices": {
+    "dra_nova": {
+      "provider": "elevenlabs",
+      "key_env": "ELEVENLABS_API_KEY",
+      "voice_id": "ajOR9IDAaubDK5qtLUqQ",
+      "model": "eleven_v4",
+      "usd_per_1k_chars": 0.3
+    },
+    "leo": {
+      "provider": "elevenlabs",
+      "key_env": "ELEVENLABS_API_KEY",
+      "voice_id": "54Tv2MxUuNfHyqLofL3P",
+      "model": "eleven_v4",
+      "usd_per_1k_chars": 0.3
+    }
+  },
+  "format": {
+    "min_seconds": 45,
+    "max_seconds": 60,
+    "words_min": 85,
+    "words_max": 110,
+    "min_scenes": 3,
+    "max_scenes": 7
+  },
+  "research": {
+    "min_sources": 2,
+    "min_facts": 5
+  },
+  "limits": {
+    "max_usd_per_video": 2.0,
+    "max_attempts": 3
+  },
+  "publishing": {
+    "approval": "manual",
+    "privacy": "private",
+    "category_id": "27"
+  },
+  "claude_model": "claude-sonnet-5-5",
+  "subscribe": "SUSCRÍBETE",
+  "closing_line": "¿Qué pregunta ponemos a prueba mañana?",
+  "editorial": [
+    "Cada dato científico sale de la ficha de hechos (con su fuente) o de una simulación del motor. Nada de memoria.",
+    "Un escenario hipotético se presenta como tal y dice sus supuestos en voz alta («suponiendo que…»).",
+    "Si la respuesta honesta es «depende» o «no se sabe», se dice.",
+    "Humor que ayude a entender, nunca a costa de la exactitud. Sin titulares engañosos.",
+    "Una simulación simplificada se rotula como simplificada.",
+    "Lenguaje claro, frases cortas, para público general desde 12 años."
+  ]
+}

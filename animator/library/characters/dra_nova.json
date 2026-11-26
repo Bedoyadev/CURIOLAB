@@ -1,0 +1,12 @@
+{
+  "id": "dra_nova", "name": "Dra. Nova", "role": "científica",
+  "personality": "Curiosa, precisa y con humor seco. Explica con ejemplos y nunca exagera un dato.",
+  "voice": "dra_nova",
+  "appearance": {"height": 640, "skin": "#F0C39A", "hair": "#4B3A8C", "hair_style": "bun", "coat": "#F7F7FA",
+                 "shirt": "#18B7A6", "pants": "#2B2D42", "shoes": "#17181C", "glasses": true, "accent": "#FF6B6B"},
+  "actions": ["idle", "talk", "blink", "walk", "point", "surprised", "happy", "confused", "thinking", "look_up", "look_left", "float"],
+  "emotions": ["neutral", "happy", "surprised", "confused", "thinking", "worried"],
+  "restrictions": ["No afirma nada que no esté en la ficha de hechos o en una simulación.",
+                   "Sus gestos son de explicación: no hace acrobacias."],
+  "art": "provisional"
+}

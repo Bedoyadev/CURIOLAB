@@ -1,0 +1,11 @@
+{
+  "id": "leo", "name": "Leo", "role": "asistente",
+  "personality": "Entusiasta, impulsivo y preguntón. Dice en voz alta lo que el espectador está pensando.",
+  "voice": "leo",
+  "appearance": {"height": 570, "skin": "#C98E63", "hair": "#2A1B12", "hair_style": "short", "coat": "",
+                 "shirt": "#FF8A3D", "pants": "#3D5A80", "shoes": "#F7F7FA", "glasses": false, "accent": "#FFD23F"},
+  "actions": ["idle", "talk", "blink", "walk", "point", "surprised", "happy", "confused", "thinking", "look_up", "look_left", "float"],
+  "emotions": ["neutral", "happy", "surprised", "confused", "thinking", "worried"],
+  "restrictions": ["No da explicaciones científicas por su cuenta: pregunta y reacciona."],
+  "art": "provisional"
+}
